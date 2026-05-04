@@ -10,8 +10,9 @@ A full-fledged AI chatbot powered by **Anthropic Claude** (`claude-sonnet-4-6`) 
 - Configurable system prompt (persona) per conversation
 - Auto-generated conversation titles
 - Single-process: `uvicorn` runs both API and UI
+- Docker-ready with CI/CD via GitHub Actions + Render.com
 
-## Quick Start
+## Quick Start (Local)
 
 ```bash
 # 1. Create virtualenv and install
@@ -30,10 +31,49 @@ uvicorn app.main:app --reload --port 8000
 # http://localhost:8000
 ```
 
+## Deploy to the Web (Render.com — Free Tier)
+
+### One-time setup
+
+1. **Fork / push this repo to GitHub** (already done if you're reading this there).
+
+2. **Sign up at [render.com](https://render.com)** (free).
+
+3. **New → Blueprint** → connect your GitHub repo → Render reads `render.yaml` and sets up the service automatically.
+
+4. In the Render dashboard, go to your service → **Environment** tab → add:
+   ```
+   ANTHROPIC_API_KEY = sk-ant-<your-key>
+   ```
+
+5. Click **Deploy** — your app will be live at `https://ai-powered-chatbot.onrender.com` (or similar).
+
+### Automatic deploys on push
+
+Add your Render deploy hook URL as a GitHub secret:
+
+1. Render dashboard → your service → **Settings** → copy the **Deploy Hook URL**.
+2. GitHub repo → **Settings → Secrets → Actions** → add secret `RENDER_DEPLOY_HOOK` with that URL.
+
+Now every push to `main` runs the test suite and, if green, triggers a Render redeploy automatically via `.github/workflows/deploy.yml`.
+
+### Run with Docker locally
+
+```bash
+docker build -t chatbot .
+docker run -p 8000:8000 \
+  -e ANTHROPIC_API_KEY=sk-ant-... \
+  -v chatbot-data:/data \
+  chatbot
+```
+
 ## Project Layout
 
 ```
 .
+├── .github/workflows/
+│   ├── ci.yml               Run tests on every push
+│   └── deploy.yml           Deploy to Render on push to main
 ├── app/
 │   ├── main.py              FastAPI app entry point
 │   ├── config.py            Settings loader
@@ -50,6 +90,8 @@ uvicorn app.main:app --reload --port 8000
 │   └── app.js
 ├── tests/
 │   └── test_smoke.py
+├── Dockerfile
+├── render.yaml              Render.com IaC blueprint
 ├── requirements.txt
 ├── .env.example
 └── README.md
@@ -60,6 +102,7 @@ uvicorn app.main:app --reload --port 8000
 | Method | Path | Purpose |
 |---|---|---|
 | GET | `/` | Serves the chat UI |
+| GET | `/healthz` | Health check (used by Render) |
 | GET | `/api/conversations` | List conversations |
 | POST | `/api/conversations` | Create conversation |
 | GET | `/api/conversations/{id}` | Get conversation + messages |
