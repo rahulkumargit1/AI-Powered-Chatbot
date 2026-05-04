@@ -48,6 +48,8 @@ uvicorn app.main:app --reload --port 8000
 
 5. Click **Deploy** — your app will be live at `https://ai-powered-chatbot.onrender.com` (or similar).
 
+> **Note on free tier:** Render's free plan does not support persistent disks, so chat history is stored on the container's ephemeral filesystem and will reset whenever the service restarts (e.g. after ~15 min of inactivity, or on redeploy). For permanent persistence, upgrade the service to a paid plan and add a `disk:` block back to `render.yaml`, or swap `DATABASE_URL` to a hosted Postgres instance.
+
 ### Automatic deploys on push
 
 Add your Render deploy hook URL as a GitHub secret:

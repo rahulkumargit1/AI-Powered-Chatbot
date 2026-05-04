@@ -13,8 +13,4 @@ services:
         value: "2048"
       - key: DATABASE_URL
         value: sqlite:////data/chatbot.db
-    disk:
-      name: chatbot-data
-      mountPath: /data
-      sizeGB: 1
     healthCheckPath: /healthz
