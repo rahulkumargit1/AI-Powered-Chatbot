@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AI-Powered Chatbot</title>
+  <link rel="stylesheet" href="/static/styles.css" />
+</head>
+<body>
+  <div id="app">
+    <aside id="sidebar">
+      <div class="sidebar-header">
+        <h1>Chats</h1>
+        <button id="new-chat-btn" title="New chat">+ New</button>
+      </div>
+      <ul id="conversation-list"></ul>
+      <div class="sidebar-footer">
+        <small>Powered by Claude</small>
+      </div>
+    </aside>
+
+    <main id="chat-pane">
+      <header id="chat-header">
+        <h2 id="chat-title">Select or start a conversation</h2>
+        <button id="settings-btn" title="System prompt">⚙ Persona</button>
+      </header>
+
+      <div id="messages" class="messages"></div>
+
+      <div id="error-banner" class="error-banner hidden"></div>
+
+      <form id="composer" class="composer">
+        <textarea
+          id="composer-input"
+          placeholder="Send a message... (Shift+Enter for newline)"
+          rows="1"
+          disabled
+        ></textarea>
+        <button id="send-btn" type="submit" disabled>Send</button>
+      </form>
+    </main>
+
+    <div id="settings-modal" class="modal hidden">
+      <div class="modal-content">
+        <h3>System prompt (persona)</h3>
+        <textarea id="system-prompt-input" rows="6"></textarea>
+        <div class="modal-actions">
+          <button id="settings-cancel" type="button">Cancel</button>
+          <button id="settings-save" type="button">Save</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="/static/app.js"></script>
+</body>
+</html>
