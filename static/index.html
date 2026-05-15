@@ -3,55 +3,128 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>AI-Powered Chatbot</title>
+  <title>Claude Chat — AI Dashboard</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-dark.min.css" />
   <link rel="stylesheet" href="/static/styles.css" />
 </head>
 <body>
   <div id="app">
     <aside id="sidebar">
-      <div class="sidebar-header">
-        <h1>Chats</h1>
-        <button id="new-chat-btn" title="New chat">+ New</button>
+      <div class="brand">
+        <div class="brand-logo">
+          <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M12 2L2 7l10 5 10-5-10-5z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/>
+            <path d="M2 17l10 5 10-5M2 12l10 5 10-5" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/>
+          </svg>
+        </div>
+        <div class="brand-text">
+          <div class="brand-name">Claude Chat</div>
+          <div class="brand-tag">AI Dashboard</div>
+        </div>
       </div>
+
+      <button id="new-chat-btn" class="new-chat-btn">
+        <span class="plus">+</span> New conversation
+      </button>
+
+      <div class="sidebar-section-label">Recent</div>
       <ul id="conversation-list"></ul>
+
       <div class="sidebar-footer">
-        <small>Powered by Claude</small>
+        <div class="status-dot"></div>
+        <span>Connected · <code>claude-sonnet-4-6</code></span>
       </div>
     </aside>
 
     <main id="chat-pane">
       <header id="chat-header">
-        <h2 id="chat-title">Select or start a conversation</h2>
-        <button id="settings-btn" title="System prompt">⚙ Persona</button>
+        <div class="header-left">
+          <div id="chat-avatar" class="chat-avatar">C</div>
+          <div>
+            <h2 id="chat-title">New conversation</h2>
+            <div id="chat-subtitle" class="chat-subtitle">Start chatting with Claude</div>
+          </div>
+        </div>
+        <div class="header-actions">
+          <button id="settings-btn" class="icon-btn" title="System prompt">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="3"/>
+              <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9c.36.16.66.42.86.74"/>
+            </svg>
+            <span>Persona</span>
+          </button>
+        </div>
       </header>
 
-      <div id="messages" class="messages"></div>
+      <div id="messages" class="messages">
+        <div id="welcome-screen" class="welcome-screen">
+          <div class="welcome-orb"></div>
+          <h1 class="welcome-title">Welcome to Claude Chat</h1>
+          <p class="welcome-sub">Powered by Anthropic <code>claude-sonnet-4-6</code> · streaming responses</p>
+
+          <div class="suggestion-grid">
+            <button class="suggestion" data-prompt="Explain how Server-Sent Events work in two short paragraphs.">
+              <div class="suggestion-icon">📡</div>
+              <div class="suggestion-title">Explain SSE</div>
+              <div class="suggestion-sub">in two paragraphs</div>
+            </button>
+            <button class="suggestion" data-prompt="Write a Python function that returns the nth Fibonacci number using memoization.">
+              <div class="suggestion-icon">🐍</div>
+              <div class="suggestion-title">Fibonacci in Python</div>
+              <div class="suggestion-sub">with memoization</div>
+            </button>
+            <button class="suggestion" data-prompt="Give me three creative startup ideas in the climate-tech space.">
+              <div class="suggestion-icon">💡</div>
+              <div class="suggestion-title">Climate-tech ideas</div>
+              <div class="suggestion-sub">three startups</div>
+            </button>
+            <button class="suggestion" data-prompt="Summarise the key differences between SQL and NoSQL databases.">
+              <div class="suggestion-icon">🗄️</div>
+              <div class="suggestion-title">SQL vs NoSQL</div>
+              <div class="suggestion-sub">at a glance</div>
+            </button>
+          </div>
+        </div>
+      </div>
 
       <div id="error-banner" class="error-banner hidden"></div>
 
       <form id="composer" class="composer">
-        <textarea
-          id="composer-input"
-          placeholder="Send a message... (Shift+Enter for newline)"
-          rows="1"
-          disabled
-        ></textarea>
-        <button id="send-btn" type="submit" disabled>Send</button>
+        <div class="composer-inner">
+          <textarea
+            id="composer-input"
+            placeholder="Message Claude..."
+            rows="1"
+          ></textarea>
+          <button id="send-btn" type="submit" class="send-btn" title="Send (Enter)">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="22" y1="2" x2="11" y2="13"/>
+              <polygon points="22 2 15 22 11 13 2 9 22 2"/>
+            </svg>
+          </button>
+        </div>
+        <div class="composer-hint">Enter to send · Shift+Enter for newline</div>
       </form>
     </main>
 
     <div id="settings-modal" class="modal hidden">
       <div class="modal-content">
-        <h3>System prompt (persona)</h3>
-        <textarea id="system-prompt-input" rows="6"></textarea>
+        <h3>System prompt</h3>
+        <p class="modal-hint">Customise how Claude behaves in this conversation.</p>
+        <textarea id="system-prompt-input" rows="6" placeholder="You are a helpful assistant..."></textarea>
         <div class="modal-actions">
-          <button id="settings-cancel" type="button">Cancel</button>
-          <button id="settings-save" type="button">Save</button>
+          <button id="settings-cancel" type="button" class="btn-ghost">Cancel</button>
+          <button id="settings-save" type="button" class="btn-primary">Save</button>
         </div>
       </div>
     </div>
   </div>
 
+  <script src="https://cdn.jsdelivr.net/npm/marked@11.1.1/marked.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
   <script src="/static/app.js"></script>
 </body>
 </html>
